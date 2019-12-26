@@ -1,5 +1,0 @@
-C:\projects\TelegramGlobalException\TelegramGlobalException\bin\Debug\netstandard2.0\TelegramGlobalException.deps.json
-C:\projects\TelegramGlobalException\TelegramGlobalException\bin\Debug\netstandard2.0\TelegramGlobalException.dll
-C:\projects\TelegramGlobalException\TelegramGlobalException\obj\Debug\netstandard2.0\TelegramGlobalException.csprojAssemblyReference.cache
-C:\projects\TelegramGlobalException\TelegramGlobalException\obj\Debug\netstandard2.0\TelegramGlobalException.AssemblyInfoInputs.cache
-C:\projects\TelegramGlobalException\TelegramGlobalException\obj\Debug\netstandard2.0\TelegramGlobalException.AssemblyInfo.cs
