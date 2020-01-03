@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>TelegramGlobalException</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>Unidas - Novas Tecnologias</Authors>
-    <Description>Package para consumo da API de Rent a Car via gateway</Description>
+    <Version>1.0.1</Version>
+    <Authors>Thiago Xavier</Authors>
+    <Description>Enviar log de erro via Telegram</Description>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -14,5 +14,5 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
-
+  
 </Project>
