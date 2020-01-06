@@ -13,11 +13,13 @@ namespace TelegramGlobalException.MiddleWare
     {
         private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
         private static NotificationService _notificationService;
+        private static bool reportMessage;
 
         public GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHandlerMiddleware> logger, IOptions<AddConfig> options)
         {
             _logger = logger;
             _notificationService = new NotificationService(options.Value.BotId, options.Value.ReceiveId);
+            reportMessage = options.Value.ReportMessageError;
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -36,7 +38,7 @@ namespace TelegramGlobalException.MiddleWare
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            const int statusCode = StatusCodes.Status500InternalServerError;
+            const int statusCode = StatusCodes.Status404NotFound;
 
             StringBuilder telegramMessage = new StringBuilder();
             telegramMessage.AppendLine($"%0A*Status code:* {statusCode}");
@@ -45,14 +47,14 @@ namespace TelegramGlobalException.MiddleWare
             telegramMessage.AppendLine($"%0A*Exception:* {exception.Message.ToString()}");
             telegramMessage.AppendLine($"%0A*Date:* {DateTime.Now.ToString()}");
 
-
             _ = _notificationService.Notify("", telegramMessage.ToString());
+            string messageError = reportMessage ? exception.Message : "";
 
             var json = JsonConvert.SerializeObject(new
             {
                 statusCode,
                 message = "An error occurred whilst processing your request",
-                detailed = exception.Message
+                detailed = messageError
             }, SerializerSettings.JsonSerializerSettings);
 
             context.Response.StatusCode = statusCode;
