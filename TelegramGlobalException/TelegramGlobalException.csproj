@@ -6,7 +6,8 @@
     <Version>1.0.3</Version>
     <Authors>Thiago Xavier</Authors>
     <Description>Middleware para enviar log de erro via Telegram.
-              Objetivo: interceptar as exceptions da API e enviar as informações via telegram. 
+              Objetivo: interceptar as exceptions da API e enviar as informações via telegram e/ou enviar mensagem
+              de erro manualmente. 
     </Description>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
