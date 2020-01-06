@@ -9,7 +9,7 @@ using TelegramGlobalException.Extensions;
 
 namespace TelegramGlobalException.MiddleWare
 {
-    public class GlobalExceptionHandlerMiddleware : IMiddleware
+    public class GlobalExceptionHandlerMiddleware : IMiddleware, IGlobalExceptionHandlerMiddleware
     {
         private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
         private static NotificationService _notificationService;
@@ -36,20 +36,16 @@ namespace TelegramGlobalException.MiddleWare
             }
         }
 
+       
+
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            const int statusCode = StatusCodes.Status404NotFound;
+            const int statusCode = StatusCodes.Status500InternalServerError;
 
-            StringBuilder telegramMessage = new StringBuilder();
-            telegramMessage.AppendLine($"%0A*Status code:* {statusCode}");
-            telegramMessage.AppendLine($"%0A*TraceId:* {context.TraceIdentifier}");
-            telegramMessage.AppendLine($"%0A*Action:* {context.Request.Path}");
-            telegramMessage.AppendLine($"%0A*Exception:* {exception.Message.ToString()}");
-            telegramMessage.AppendLine($"%0A*Date:* {DateTime.Now.ToString()}");
+            var mensagem = Message(context, exception, statusCode);
+            _ = _notificationService.Notify("", mensagem);
 
-            _ = _notificationService.Notify("", telegramMessage.ToString());
             string messageError = reportMessage ? exception.Message : "";
-
             var json = JsonConvert.SerializeObject(new
             {
                 statusCode,
@@ -64,6 +60,21 @@ namespace TelegramGlobalException.MiddleWare
             return context.Response.WriteAsync(json);
         }
 
+        protected static string Message(HttpContext context, Exception exception, int statusCode)
+        {
+            StringBuilder telegramMessage = new StringBuilder();
+            telegramMessage.AppendLine($"%0A*Status code:* {statusCode}");
+            telegramMessage.AppendLine($"%0A*TraceId:* {context.TraceIdentifier}");
+            telegramMessage.AppendLine($"%0A*Action:* {context.Request.Path}");
+            telegramMessage.AppendLine($"%0A*Exception:* {exception.Message.ToString()}");
+            telegramMessage.AppendLine($"%0A*Date:* {DateTime.Now.ToString()}");
+            return telegramMessage.ToString();
+        }
 
+        public void SendErrorToTelegram(HttpContext context, Exception exception, int statusCode)
+        {
+            var mensagem = Message(context, exception, statusCode);
+            _ = _notificationService.Notify("", mensagem);
+        }
     }
 }
