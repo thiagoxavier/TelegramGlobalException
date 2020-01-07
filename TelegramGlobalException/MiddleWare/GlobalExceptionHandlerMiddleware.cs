@@ -3,8 +3,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using TelegramGlobalException.Extensions;
 
 namespace TelegramGlobalException.MiddleWare
@@ -62,17 +64,19 @@ namespace TelegramGlobalException.MiddleWare
 
         protected static string Message(HttpContext context, Exception exception, int statusCode)
         {
-            StringBuilder telegramMessage = new StringBuilder();
-            telegramMessage.AppendLine($"%0A*Status code:* {statusCode}");
-            telegramMessage.AppendLine($"%0A*TraceId:* {context.TraceIdentifier}");
-            telegramMessage.AppendLine($"%0A*Action:* {context.Request.Path}");
-            telegramMessage.AppendLine($"%0A*Exception:* {exception.Message.ToString()}");
-            telegramMessage.AppendLine($"%0A*Date:* {DateTime.Now.ToString()}");
+            
+               StringBuilder telegramMessage = new StringBuilder();
+            telegramMessage.AppendLine($"*Status code:* {statusCode}");
+            telegramMessage.AppendLine($"*TraceId:* {context.TraceIdentifier}");
+            telegramMessage.AppendLine($"*Action:* {context.Request.Path}");
+            telegramMessage.AppendLine($"*Exception:* { HttpUtility.UrlEncode (exception.Message.ToString())}");
+            telegramMessage.AppendLine($"*Date:* {DateTime.Now.ToString()}");
             return telegramMessage.ToString();
         }
 
         public void SendErrorToTelegram(HttpContext context, Exception exception, int statusCode)
         {
+
             var mensagem = Message(context, exception, statusCode);
             _ = _notificationService.Notify("", mensagem);
         }
