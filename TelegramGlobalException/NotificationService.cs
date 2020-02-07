@@ -18,8 +18,9 @@ namespace TelegramGlobalException
         public async Task Notify(string title, string message)
         {
             var text = new StringBuilder($"*{title}*");
-            text.Append($"{ Uri.EscapeDataString(message)}");
-            text.Append($"*MachineName: {Environment.MachineName}*");
+            text.Append($"%0A{Uri.EscapeDataString(message)}");
+            text.Append($"%0A*MachineName: {Environment.MachineName}*");
+            text.Append($"%0A*Date: {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}*");
 
             using (var httpClient = new HttpClient())
             {
