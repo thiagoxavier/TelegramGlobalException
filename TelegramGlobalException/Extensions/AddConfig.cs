@@ -5,6 +5,8 @@
         public string BotId { get; set; }
         public string ReceiveId { get; set; }
 
+        public string AddressExtraInformation { get; set; }
+
         /// <summary>
         /// Report message
         /// </summary>

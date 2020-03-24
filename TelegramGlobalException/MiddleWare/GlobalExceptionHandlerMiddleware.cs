@@ -14,9 +14,11 @@ namespace TelegramGlobalException.MiddleWare
         private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
         private static NotificationService _notificationService;
         private static bool reportMessage;
+        private static string _addressExtraInformation;
 
         public GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHandlerMiddleware> logger, IOptions<AddConfig> options)
         {
+            _addressExtraInformation = options.Value.AddressExtraInformation;
             _logger = logger;
             _notificationService = new NotificationService(options.Value.BotId, options.Value.ReceiveId);
             reportMessage = options.Value.ReportMessageError;
@@ -67,8 +69,17 @@ namespace TelegramGlobalException.MiddleWare
             telegramMessage.AppendLine($"*TraceId:* {context.TraceIdentifier}");
             telegramMessage.AppendLine($"*Action:* {context.Request.Path}");
             telegramMessage.AppendLine($"*Exception:* {exception.Message.ToString()}");
-            telegramMessage.AppendLine($"*Stack Trace:* {exception.StackTrace}");
+
+            if (!string.IsNullOrWhiteSpace(_addressExtraInformation))
+            {
+                telegramMessage.AppendLine($"*Extra information:* {_addressExtraInformation}{context.TraceIdentifier}");
+            }
+
             telegramMessage.AppendLine($"*Date:* {DateTime.Now.ToString()}");
+            string stackTrace = exception.StackTrace.Length > 2100 ? exception.StackTrace.Substring(0, 2100) : exception.StackTrace;
+
+            telegramMessage.AppendLine($"*Stack Trace:* {stackTrace}");
+
             return telegramMessage.ToString();
         }
 

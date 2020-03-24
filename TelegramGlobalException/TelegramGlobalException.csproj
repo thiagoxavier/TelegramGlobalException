@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>TelegramGlobalException</PackageId>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <Authors>Thiago Xavier</Authors>
     <Description>Middleware para enviar log de erro via Telegram.
               Objetivo: interceptar as exceptions da API e enviar as informações via telegram e/ou enviar mensagem
